@@ -103,7 +103,6 @@ class BankAccountServiceImplTest {
         BankAccountRepository bankAccountRepository = Mockito.mock(BankAccountRepository.class);
         Mockito.when(bankAccountRepository.getAccount(userId, accountId))
                 .thenReturn(bankAccount);
-        ArgumentCaptor<BankAccount> bankAccountArgumentCaptor = ArgumentCaptor.forClass(BankAccount.class);
         BankAccountService bankAccountService = new BankAccountServiceImpl(bankAccountRepository, clock);
 
         //when
