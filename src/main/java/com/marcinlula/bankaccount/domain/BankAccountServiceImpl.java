@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.marcinlula.bankaccount.domain.model.Operation.Type.DEPOSIT;
@@ -34,20 +35,27 @@ class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public List<Operation> getAccountHistory(UUID userId, UUID accountId) {
-        return bankAccountRepository.getAccount(userId, accountId).getOperations();
+    public Optional<List<Operation>> getAccountHistory(UUID userId, UUID accountId) {
+        return bankAccountRepository.getAccount(userId, accountId)
+                .map(BankAccount::getOperations);
     }
 
     private void addOperation(UUID userId, UUID accountId, BigDecimal amount, Operation.Type type) {
-        BankAccount account = bankAccountRepository.getAccount(userId, accountId);
-        BigDecimal lastBalance = account.getLastBalance();
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        Optional<BankAccount> account = bankAccountRepository.getAccount(userId, accountId);
+        if (!account.isPresent()) {
+            throw new IllegalArgumentException("Account not found");
+        }
+        BigDecimal lastBalance = account.get().getLastBalance();
         BigDecimal newBalance = type == DEPOSIT
                 ? lastBalance.add(amount)
                 : lastBalance.add(amount.negate());
         LocalDate date = LocalDate.now(clock);
         Operation operation = new Operation(type, date, amount, newBalance);
-        account.addOperation(operation);
-        bankAccountRepository.save(account);
+        account.get().addOperation(operation);
+        bankAccountRepository.save(account.get());
     }
 
 }

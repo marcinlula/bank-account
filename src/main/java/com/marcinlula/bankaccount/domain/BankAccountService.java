@@ -4,6 +4,7 @@ import com.marcinlula.bankaccount.domain.model.Operation;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BankAccountService {
@@ -12,5 +13,5 @@ public interface BankAccountService {
 
     void withdrawal(UUID userId, UUID accountId, BigDecimal amount);
 
-    List<Operation> getAccountHistory(UUID userId, UUID accountId);
+    Optional<List<Operation>> getAccountHistory(UUID userId, UUID accountId);
 }
