@@ -141,7 +141,7 @@ class BankAccountServiceImplTest {
                 bankAccountService.deposit(userId, accountId, amount));
 
         //then
-        Assertions.assertEquals("Amount cannot be negative", exception.getMessage());
+        Assertions.assertEquals("Amount must be positive", exception.getMessage());
     }
 
     @Test
@@ -159,7 +159,7 @@ class BankAccountServiceImplTest {
                 bankAccountService.withdrawal(userId, accountId, amount));
 
         //then
-        Assertions.assertEquals("Amount cannot be negative", exception.getMessage());
+        Assertions.assertEquals("Amount must be positive", exception.getMessage());
     }
 
     @Test

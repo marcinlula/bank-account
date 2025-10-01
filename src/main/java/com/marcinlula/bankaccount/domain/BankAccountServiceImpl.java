@@ -41,11 +41,11 @@ class BankAccountServiceImpl implements BankAccountService {
     }
 
     private void addOperation(UUID userId, UUID accountId, BigDecimal amount, Operation.Type type) {
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount cannot be negative");
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
         }
         Optional<BankAccount> account = bankAccountRepository.getAccount(userId, accountId);
-        if (!account.isPresent()) {
+        if (account.isEmpty()) {
             throw new IllegalArgumentException("Account not found");
         }
         BigDecimal lastBalance = account.get().getLastBalance();
